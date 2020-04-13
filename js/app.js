@@ -16,10 +16,10 @@ function cargarEventListeners(){
     carrito.addEventListener('click', eliminarCurso);
 
     //Vaciar carrito
-    carrito.addEventListener('click', vaciarCarrito)
+    vaciarCarritoBtn.addEventListener('click', vaciarCarrito)
 
     //Al recargar el elemento, mostrar el localStorage
-    document.addEventListener('DOMContentLoaded',  leerLocalStorage);
+    document.addEventListener('DOMContentLoaded', leerLocalStorage);
 }
 
 //FUNCIONES
@@ -45,10 +45,9 @@ function leerDatosCurso(curso){
         precio: curso.querySelector('.precio span').textContent,
         id: curso.querySelector('a').getAttribute('data-id')
     }
-
-
     insertarCarrito(infoCurso);
 }
+
 
 //Muestra el curso seleccionado en el carrito
 function insertarCarrito(curso){
@@ -71,12 +70,15 @@ function insertarCarrito(curso){
 function eliminarCurso(e){
     e.preventDefault();
 
-    let curso;
+    let curso,cursoId;
 
-    if(e.target.classList.contains('borrar-curso')){
+    if(e.target.classList.contains('borrar-curso') ) {
        e.target.parentElement.parentElement.remove();
+       curso = e.target.parentElement.parentElement;
+       cursoId = curso.querySelector('a').getAttribute('data-id');
+      
     }
-
+    eliminarCursoLocalStorage(cursoId);
 };
 
 
@@ -88,7 +90,10 @@ function vaciarCarrito(){
     //forma recomendada
     while(listaCursos.firstChild){
         listaCursos.removeChild(listaCursos.firstChild);
-    }return false;
+    }
+    //Vaciar Local Storage
+    vaciarLocalStorage();
+    return false;
 }
 
 
@@ -102,7 +107,7 @@ function guardarCursoLocalStorage(curso){
     //el curso seleccionado se agrega al arreglo
     cursos.push(curso);
 
-    localStorage.setItem('cursos', JSON.stringify(cursos));
+    localStorage.setItem('cursos', JSON.stringify(cursos) );
 }
 
 //Comprueba si existen elementos en LS
@@ -113,7 +118,7 @@ function obtenerCursosLocalStorage(){
     if(localStorage.getItem('cursos') === null){
         cursosLS = [];
     }else{
-        cursosLS = JSON.parse( localStorage.getItem('cursos'));
+        cursosLS = JSON.parse( localStorage.getItem('cursos') );
     }
     return cursosLS;
 }
@@ -140,4 +145,25 @@ function leerLocalStorage(){
 
     });
 
+}
+
+//Elimina el curso por ID del local Storage
+
+function eliminarCursoLocalStorage(curso){
+    let cursosLS;
+    cursosLS = obtenerCursosLocalStorage();
+
+    //Iteramos comparendo el ID del curso comparado con los del LS
+    cursosLS.forEach(function(cursoLS, index){
+        if(cursoLS.id === curso){
+            cursosLS.splice(index,1);
+        }
+    });
+    //Añadimos el arreglo acutal a Storage
+    localStorage.setItem('cursos', JSON.stringify(cursosLS));
+}
+
+//Elimina todos los cursos de Local Storage
+function vaciarLocalStorage(){
+    localStorage.clear();
 }
