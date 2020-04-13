@@ -7,8 +7,12 @@ const listaCursos = document.querySelector('#lista-carrito tbody');
 cargarEventListeners();
 
 function cargarEventListeners(){
-    //Dipsara cuando se presiona "Agregar Carrito"
+    //Disparaa cuando se presiona "Agregar Carrito"
     cursos.addEventListener('click', comprarCurso);
+
+
+    //Cuando se elimina un curso del carrito
+    carrito.addEventListener('click', eliminarCurso);
 }
 
 //FUNCIONES
@@ -40,7 +44,6 @@ function leerDatosCurso(curso){
 }
 
 //Muestra el curso seleccionado en el carrito
-
 function insertarCarrito(curso){
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -55,3 +58,15 @@ function insertarCarrito(curso){
     `;
     listaCursos.append(row);
 }
+
+//Elimina el curso del carrito en el DOM
+function eliminarCurso(e){
+    e.preventDefault();
+
+    let curso;
+
+    if(e.target.classList.contains('borrar-curso')){
+       e.target.parentElement.parentElement.remove();
+    }
+
+};
